@@ -1,0 +1,45 @@
+import cv2
+import torch
+from PIL import Image
+from IPython.display import display
+import numpy as np
+
+# Display the input image
+img_path = r"C:\Users\suresh_kannayya\Downloads\drone_capture_alumni.jpg"
+img = Image.open(img_path)
+display(img)
+
+# Load YOLOv5 model
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+
+# Load and preprocess image
+image = cv2.imread(img_path)
+image_resized = cv2.resize(image, (640, 640))  # YOLOv5 default size is 640x640
+
+# Perform detection
+results = model(image_resized)
+detections = results.xyxy[0]
+
+# Count people and label the boxes
+people_count = 0
+for i, det in enumerate(detections):
+    if det[-1] == 0:  # Class 0 is 'person'
+        x1, y1, x2, y2 = int(det[0]), int(det[1]), int(det[2]), int(det[3])
+        cv2.rectangle(image_resized, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        label = f'Person {people_count + 1}'
+        cv2.putText(image_resized, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        people_count += 1
+
+print(f'Number of people detected: {people_count}')
+
+# Convert the image back to RGB (OpenCV uses BGR by default)
+image_rgb = cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB)
+
+# Convert to PIL image and display
+result_img = Image.fromarray(image_rgb)
+display(result_img)
+
+# Save and optionally display the image with bounding boxes and labels
+output_path = r"C:\Users\suresh_kannayya\Downloads\drone_capture_alumni_labeled.jpg"
+cv2.imwrite(output_path, image_resized)
+
