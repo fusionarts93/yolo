@@ -5,7 +5,7 @@ from IPython.display import display
 import numpy as np
 
 # Display the input image
-img_path = r"C:\Users\suresh_kannayya\Downloads\drone_capture_alumni.jpg"
+img_path = r"add your image path"
 img = Image.open(img_path)
 display(img)
 
@@ -40,6 +40,6 @@ result_img = Image.fromarray(image_rgb)
 display(result_img)
 
 # Save and optionally display the image with bounding boxes and labels
-output_path = r"C:\Users\suresh_kannayya\Downloads\drone_capture_alumni_labeled.jpg"
+output_path = r"output path"
 cv2.imwrite(output_path, image_resized)
 
